@@ -86,9 +86,7 @@ label {
 
 input[type="checkbox"] + label:before {
   content: "";
-  background: #1ba39c;
-  border-radius: 15px;
-  border: 2px solid rgb(253, 251, 251);
+  border: 2px solid #0c8001;
   display: inline-block;
   vertical-align: middle;
   width: 10px;
@@ -103,7 +101,7 @@ input[type="checkbox"]:checked + label:before {
   display: inline-block;
   width: 1px;
   height: 5px;
-  border: solid green;
+  border: solid #19019e;
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
