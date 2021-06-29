@@ -1,47 +1,78 @@
-let addMessage = document.querySelector(".message"),
-  addButton = document.querySelector(".add");
-todo = document.querySelector(".todo");
+const input = document.querySelector(".message"); // get the value from <input class="message">
+const button = document.querySelector(".add"); // get the value from <button class="add">
+const ul = document.querySelector(".todo"); // get the value from <ul class="todo">
 
-let todoList = [];
+let todoList = []; // create an array for data
 
-if (localStorage.getItem("todo")) {
-  todoList = JSON.parse(localStorage.getItem("todo"));
-  displayMessage();
-}
+const displayMessages = () => {
+  let li = "";
 
-addButton.addEventListener("click", function () {
-  let newTodo = {
-    todo: addMessage.value,
+  todoList.forEach((item, i) => {
+    li += `
+      <li>
+      <input type="checkbox" id="item_${i}" ${item.checked ? "checked" : ""}>
+      <label for="item_${i}" ${item.important ? 'class="important"' : ""}> 
+        ${item.description}
+      </label>
+      </li>
+    `;
+
+    ul.innerHTML = li;
+  });
+};
+
+const addNote = () => {
+  const newTodo = {
+    description: input.value,
     checked: false,
     important: false,
   };
 
   todoList.push(newTodo);
-  displayMessage();
-  localStorage.setItem("todo", JSON.stringify(todoList));
-});
+  displayMessages();
+  localStorage.setItem("ul", JSON.stringify(todoList));
 
-function displayMessage() {
-  let displayMessage = "";
-  todoList.forEach(function (item, i) {
-    displayMessage += `
-    <li>
-    <input type="checkbox" id="item_${i}" ${item.checked ? "checked" : ""}>
-    <label for = "item_${i}">${item.todo}</label>
-    </li>
-    `;
-    todo.innerHTML = displayMessage;
-  });
+  input.value = "";
+};
+
+if (localStorage.getItem("ul")) {
+  todoList = JSON.parse(localStorage.getItem("ul"));
+  displayMessages();
 }
 
-todo.addEventListener("change", function (event) {
-  let valueLabel = todo.querySelector(
+// event listener for add button (keyboard)
+input.addEventListener("keydown", (event) => {
+  if (event.keyCode === 13) {
+    addNote();
+  }
+});
+
+// event listener for add button (mouse)
+button.addEventListener("click", () => addNote());
+
+// event listener for "checked" field
+ul.addEventListener("change", (event) => {
+  const valueLabel = ul.querySelector(
     "[for=" + event.target.getAttribute("id") + "]"
   ).innerHTML;
-  todoList.forEach(function (item) {
-    if (item.todo === valueLabel) {
-      item.checked != item.checked;
-      localStorage.setItem("todo", JSON.stringify(todoList));
+
+  todoList.forEach((item) => {
+    if (item.description === valueLabel.trim()) {
+      item.checked = !item.checked;
+      localStorage.setItem("ul", JSON.stringify(todoList));
+    }
+  });
+});
+
+// event listener for "important" field
+ul.addEventListener("contextmenu", (event) => {
+  event.preventDefault();
+
+  todoList.forEach((item) => {
+    if (item.description === event.target.innerHTML) {
+      item.important = !item.important;
+      displayMessages();
+      localStorage.setItem("ul", JSON.stringify(todoList));
     }
   });
 });
